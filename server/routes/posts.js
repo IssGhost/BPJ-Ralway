@@ -1,6 +1,7 @@
 const router = require("express").Router();
 const Post = require("../models/Post");
 const { auth, isEmployee } = require("../middleware/auth");
+const mongoose = require("mongoose");
 
 // PUBLIC list (published only). If ?all=1 and employee/admin, returns all.
 router.get("/", authOptional, async (req, res) => {
@@ -28,7 +29,7 @@ router.post("/", auth, isEmployee, async (req, res) => {
   const p = await Post.create({
     title, slug, summary, content, coverUrl,
     status: status || "draft",
-    authorId: req.user._id,
+    ...(mongoose.Types.ObjectId.isValid(req.user._id) ? { authorId: req.user._id } : {}),
     publishedAt: status === "published" ? new Date() : undefined,
   });
   res.json(p);

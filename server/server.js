@@ -54,6 +54,8 @@ safeMount("/api/products", "./routes/products");
 safeMount("/api/posts", "./routes/posts");
 safeMount("/api/tickets", "./routes/tickets");
 safeMount("/api/blog", "./routes/blog");
+safeMount("/api/testimonials", "./routes/testimonials");
+safeMount("/api/demo", "./routes/demo");
 
 const distDir = path.resolve(__dirname, "..", "dist");
 const shouldServeClient =

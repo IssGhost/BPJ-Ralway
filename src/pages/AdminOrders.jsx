@@ -39,7 +39,7 @@ export default function AdminOrders() {
     }
   };
 
-  if (!rows) return <div className="min-h-screen bg-black text-white pt-32 px-6">Loading…</div>;
+  if (!rows) return <div className="min-h-screen bg-black text-white pt-32 px-6">Loading...</div>;
 
   const list = rows.filter((r) => (filter === "all" ? true : r.status === filter));
 

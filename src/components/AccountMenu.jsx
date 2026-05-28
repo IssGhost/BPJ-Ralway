@@ -68,6 +68,15 @@ export default function AccountMenu() {
                 <button onClick={() => go("/admin/users")} className="w-full text-left px-4 py-2 text-sm hover:bg-white/10">
                   Manage Users
                 </button>
+                <button onClick={() => go("/admin/requests")} className="w-full text-left px-4 py-2 text-sm hover:bg-white/10">
+                  Service Requests
+                </button>
+                <button onClick={() => go("/admin/blog")} className="w-full text-left px-4 py-2 text-sm hover:bg-white/10">
+                  Blog Posts
+                </button>
+                <button onClick={() => go("/admin/testimonials")} className="w-full text-left px-4 py-2 text-sm hover:bg-white/10">
+                  Testimonials
+                </button>
               </>
             )}
           </div>

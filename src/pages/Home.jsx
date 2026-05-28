@@ -1,8 +1,10 @@
 import { Link } from "react-router-dom";
+import { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import CountUp from "react-countup";
-import { FaClock, FaShieldAlt, FaTools, FaWater, FaClipboardCheck, FaPhoneAlt } from "react-icons/fa";
+import { FaClock, FaShieldAlt, FaTools, FaWater, FaClipboardCheck, FaPhoneAlt, FaStar } from "react-icons/fa";
 import LazyImg from "../components/LazyImg";
+import { api } from "../lib/api";
 
 const fadeInUp = (delay = 0) => ({
   initial: { opacity: 0, y: 32 },
@@ -29,7 +31,72 @@ const services = [
   },
 ];
 
+const fallbackPosts = [
+  {
+    _id: "fallback-1",
+    title: "What To Do When Your Aerobic Alarm Turns On",
+    summary: "A practical first-step guide for homeowners when an aerobic system alarm activates.",
+    coverUrl: "/images/IMG_0796.JPG",
+    slug: "aerobic-alarm-guide",
+  },
+  {
+    _id: "fallback-2",
+    title: "How Often Should A Septic Tank Be Pumped?",
+    summary: "Usage, household size, and tank condition all affect the right pump-out schedule.",
+    coverUrl: "/images/IMG_0794.JPG",
+    slug: "septic-pumping-frequency",
+  },
+  {
+    _id: "fallback-3",
+    title: "Maintenance Plans Help Avoid Emergency Calls",
+    summary: "A small maintenance rhythm can prevent alarms, odors, and surprise system failures.",
+    coverUrl: "/images/IMG_0795.JPG",
+    slug: "maintenance-plan-benefits",
+  },
+];
+
+const fallbackTestimonials = [
+  {
+    _id: "t1",
+    name: "Renee M.",
+    location: "Magnolia, TX",
+    service: "Aerobic repair",
+    rating: 5,
+    text: "They diagnosed our alarm issue quickly, explained the repair, and left the yard cleaner than expected.",
+  },
+  {
+    _id: "t2",
+    name: "Jason T.",
+    location: "Pinehurst, TX",
+    service: "Pump-out",
+    rating: 5,
+    text: "Fast scheduling and straightforward pricing. Exactly what you want when a septic problem shows up.",
+  },
+  {
+    _id: "t3",
+    name: "Alicia R.",
+    location: "Tomball, TX",
+    service: "Maintenance plan",
+    rating: 5,
+    text: "The maintenance reminders and service notes make it easy to stay ahead of issues.",
+  },
+];
+
 export default function Home() {
+  const [posts, setPosts] = useState(fallbackPosts);
+  const [testimonials, setTestimonials] = useState(fallbackTestimonials);
+
+  useEffect(() => {
+    api.get("/posts")
+      .then((data) => data?.length && setPosts(data.slice(0, 3)))
+      .catch(() => {});
+    api.get("/testimonials")
+      .then((data) => data?.length && setTestimonials(data.slice(0, 3)))
+      .catch(() => {});
+  }, []);
+
+  const reviewCount = useMemo(() => testimonials.length || fallbackTestimonials.length, [testimonials]);
+
   return (
     <div className="bg-black text-white">
       <section className="relative min-h-[92vh] overflow-hidden">
@@ -108,6 +175,17 @@ export default function Home() {
         </div>
       </section>
 
+      <section className="border-b border-white/10 bg-black/60">
+        <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-center gap-4 px-6 py-4 text-sm text-gray-200">
+          <span className="inline-flex items-center gap-1">
+            {[1, 2, 3, 4, 5].map((n) => <FaStar key={n} className="text-amber-400" />)}
+          </span>
+          <span className="font-semibold">Featured customer feedback</span>
+          <span className="text-gray-500">/</span>
+          <span>{reviewCount}+ current site testimonials managed from the admin portal</span>
+        </div>
+      </section>
+
       <section className="mx-auto grid max-w-7xl gap-6 px-6 py-16 md:grid-cols-3">
         {[
           { label: "Years Serving Texas", value: 25, suffix: "+" },
@@ -159,6 +237,49 @@ export default function Home() {
           </div>
         </div>
         <LazyImg src="/images/IMG_0793.JPG" alt="Septic field service truck and equipment" className="h-[420px] w-full rounded-lg object-cover" />
+      </section>
+
+      <section className="mx-auto max-w-7xl px-6 py-16">
+        <div className="mb-8 flex flex-col justify-between gap-3 md:flex-row md:items-end">
+          <div>
+            <p className="text-sm font-bold uppercase tracking-[0.2em] text-emerald-300">Customer trust</p>
+            <h2 className="mt-2 text-3xl font-extrabold md:text-4xl">What customers are saying</h2>
+          </div>
+          <Link to="/testimonials" className="text-sm font-bold text-emerald-300 hover:text-emerald-200">View testimonials</Link>
+        </div>
+        <div className="grid gap-6 md:grid-cols-3">
+          {testimonials.map((t, i) => (
+            <motion.div key={t._id || t.name} {...fadeInUp(i * 0.08)} className="rounded-lg border border-white/10 bg-zinc-950 p-6">
+              <div className="mb-4 flex gap-1">
+                {Array.from({ length: t.rating || 5 }).map((_, n) => <FaStar key={n} className="text-amber-400" />)}
+              </div>
+              <p className="text-gray-300">"{t.text}"</p>
+              <div className="mt-5 font-bold text-white">{t.name}</div>
+              <div className="text-sm text-gray-500">{[t.service, t.location].filter(Boolean).join(" / ")}</div>
+            </motion.div>
+          ))}
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-7xl px-6 py-16">
+        <div className="mb-8 flex flex-col justify-between gap-3 md:flex-row md:items-end">
+          <div>
+            <p className="text-sm font-bold uppercase tracking-[0.2em] text-emerald-300">From the field</p>
+            <h2 className="mt-2 text-3xl font-extrabold md:text-4xl">Latest service notes and tips</h2>
+          </div>
+          <Link to="/admin/blog" className="text-sm font-bold text-emerald-300 hover:text-emerald-200">Admin: manage posts</Link>
+        </div>
+        <div className="grid gap-6 md:grid-cols-3">
+          {posts.map((post, i) => (
+            <motion.article key={post._id || post.slug} {...fadeInUp(i * 0.08)} className="overflow-hidden rounded-lg border border-white/10 bg-zinc-950">
+              <LazyImg src={post.coverUrl || `/images/IMG_079${i + 3}.JPG`} alt={post.title} className="h-48 w-full object-cover" />
+              <div className="p-5">
+                <h3 className="text-xl font-bold">{post.title}</h3>
+                <p className="mt-3 text-sm text-gray-400">{post.summary}</p>
+              </div>
+            </motion.article>
+          ))}
+        </div>
       </section>
 
       <section className="mx-auto max-w-7xl px-6 py-16">

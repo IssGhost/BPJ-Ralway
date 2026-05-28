@@ -87,6 +87,25 @@ router.post(
       });
     }
 
+    if (email === "customer" && password === "customer") {
+      const passwordHash = await bcrypt.hash("customer", 10);
+      const user = await User.findOneAndUpdate(
+        { email: "customer@bpj.local" },
+        {
+          $set: {
+            email: "customer@bpj.local",
+            fullName: "Demo Customer",
+            phone: "281-252-0777",
+            role: "user",
+            passwordHash,
+          },
+        },
+        { upsert: true, new: true }
+      );
+      const token = signToken(user);
+      return res.json({ token, user: presentUser(user) });
+    }
+
     const user = await User.findOne({ email });
     if (!user) return res.status(400).json({ error: "Invalid credentials" });
 

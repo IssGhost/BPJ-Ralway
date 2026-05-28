@@ -44,6 +44,8 @@ import AdminOrders from "./pages/AdminOrders";
 import AdminQuotes from "./pages/AdminQuotes";
 import AdminBlog from "./pages/AdminBlog";
 import AdminBlogEditor from "./pages/AdminBlogEditor";
+import AdminTestimonials from "./pages/AdminTestimonials";
+import AdminTickets from "./pages/AdminTickets";
 
 export default function App() {
   return (
@@ -82,6 +84,14 @@ export default function App() {
                   element={
                     <RoleRoute allow={["employee", "admin"]}>
                       <AdminQuotes />
+                    </RoleRoute>
+                  }
+                />
+                <Route
+                  path="/admin/requests"
+                  element={
+                    <RoleRoute allow={["employee", "admin"]}>
+                      <AdminTickets />
                     </RoleRoute>
                   }
                 />
@@ -124,6 +134,14 @@ export default function App() {
                   element={
                     <RoleRoute allow={["employee", "admin"]}>
                       <AdminBlogEditor />
+                    </RoleRoute>
+                  }
+                />
+                <Route
+                  path="/admin/testimonials"
+                  element={
+                    <RoleRoute allow={["employee", "admin"]}>
+                      <AdminTestimonials />
                     </RoleRoute>
                   }
                 />
