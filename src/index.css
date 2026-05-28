@@ -1,0 +1,197 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+@keyframes slow-zoom {
+  0% { transform: scale(1); }
+  100% { transform: scale(1.08); }
+}
+.animate-slow-zoom {
+  animation: slow-zoom 20s ease-in-out infinite alternate;
+}
+
+/* ====== Custom BPJ Card Effects ====== */
+@keyframes hue-rotate { to { filter: hue-rotate(360deg); } }
+@keyframes sheen-move { 0%{transform:translateX(-120%)} 100%{transform:translateX(120%)} }
+
+.card-base {
+  @apply relative rounded-xl border border-white/10 bg-gray-900/90 shadow-lg overflow-hidden;
+}
+
+/* 🔥 Laser Glow Border */
+.card-laser { @apply card-base; }
+.card-laser::before {
+  content:""; position:absolute; inset:-1px; border-radius:inherit;
+  background: conic-gradient(from 180deg at 50% 50%, #14b8a6, #22c55e, #22d3ee, #14b8a6);
+  filter: blur(0.6px) saturate(1.1);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor; mask-composite: exclude;
+  padding: 1px; pointer-events:none;
+  animation: hue-rotate 12s linear infinite;
+}
+
+/* ✨ Sheen Sweep */
+.card-sheen { @apply card-base; }
+.card-sheen::after {
+  content:""; position:absolute; inset:0; pointer-events:none; opacity:0;
+  background: linear-gradient(110deg, transparent 30%, rgba(255,255,255,.18) 50%, transparent 70%);
+  transform: translateX(-120%);
+  transition: opacity .2s ease;
+}
+.card-sheen:hover::after { opacity:1; animation: sheen-move 1.2s ease; }
+
+/* 🧊 Glass + Grid */
+.card-gridglass { @apply card-base backdrop-blur bg-white/5; }
+.card-gridglass::before {
+  content:""; position:absolute; inset:0; pointer-events:none; opacity:.22;
+  background-image:
+    radial-gradient(rgba(255,255,255,.15) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255,255,255,.06), transparent);
+  background-size: 14px 14px, 100% 100%;
+}
+
+/* 🎯 Tilt Effect */
+.tilt { perspective: 900px; transform-style: preserve-3d; }
+.tilt > .tilt-inner {
+  transform: rotateX(0) rotateY(0) translateZ(0);
+  transition: transform .25s ease, box-shadow .25s ease;
+}
+.tilt:hover > .tilt-inner { transform: rotateX(3deg) rotateY(-3deg) translateZ(2px); }
+
+/* ====== BPJ PRO CARD SKINS (cross-browser safe) ====== */
+
+/* Base */
+.card-pro {
+  @apply relative rounded-xl bg-gray-900/95 border border-white/10 shadow-lg overflow-hidden;
+}
+
+/* Gradient border using background-clip (no masks) */
+.card-pro--glow {
+  position: relative;
+  border: 1px solid transparent;
+  background:
+    linear-gradient(#0b0f17, #0b0f17) padding-box,
+    linear-gradient(135deg, rgba(16,185,129,.9), rgba(34,211,238,.9)) border-box;
+  border-radius: 0.75rem;
+  box-shadow: 0 10px 30px -20px rgba(16,185,129,.35);
+}
+.card-pro--glow:hover {
+  box-shadow: 0 18px 50px -24px rgba(16,185,129,.45);
+}
+
+/* Sheen sweep (no masks) */
+.card-pro--sheen {
+  @apply card-pro;
+}
+.card-pro--sheen::after {
+  content: "";
+  position: absolute; inset: 0; pointer-events: none;
+  background: linear-gradient(110deg, transparent 30%, rgba(255,255,255,.14) 50%, transparent 70%);
+  transform: translateX(-120%);
+  opacity: 0; transition: opacity .2s ease, transform .9s ease;
+}
+.card-pro--sheen:hover::after {
+  opacity: 1; transform: translateX(120%);
+}
+
+/* Glass with subtle dot grid */
+.card-pro--grid {
+  @apply card-pro backdrop-blur;
+  background:
+    radial-gradient(rgba(255,255,255,.12) 1px, transparent 1px) 0 0 / 14px 14px,
+    linear-gradient(to bottom, rgba(255,255,255,.06), transparent) 0 0 / 100% 100%,
+    rgba(17,24,39,.75);
+}
+
+/* Gentle tilt */
+.tilt { perspective: 900px; transform-style: preserve-3d; }
+.tilt > .tilt-inner {
+  transform: rotateX(0) rotateY(0) translateZ(0);
+  transition: transform .25s ease, box-shadow .25s ease;
+}
+.tilt:hover > .tilt-inner { transform: rotateX(2deg) rotateY(-3deg) translateZ(2px); }
+
+/* Slow zoom (hero poster fallback) */
+@keyframes slowZoom { 0% { transform: scale(1.05);} 100% { transform: scale(1.12);} }
+.animate-slow-zoom { animation: slowZoom 20s ease-in-out infinite alternate; }
+
+/* Subtle site texture (with external SVG) */
+.bg-noise {
+  background:
+    radial-gradient(800px circle at 50% -10%, rgba(20,184,166,.07), transparent 60%),
+    linear-gradient(to bottom, rgba(255,255,255,.02), transparent 30%),
+    url("/noise.svg") repeat;
+}
+
+/* Soft bottom fade to avoid video edge showing */
+.hero-bottom-fade {
+  mask-image: linear-gradient(to bottom, black 85%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to bottom, black 85%, transparent 100%);
+}
+
+/* Tweak for Safari overflow artifacts on video */
+.video-smooth {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  will-change: transform;
+}
+
+/* ===== Big Papa Joe Surface: gradient + noise + brand glow ===== */
+.bpj-surface {
+  position: relative;
+  /* Deep charcoal vertical gradient (not pure black) */
+  background: linear-gradient(180deg, #0f1115 0%, #0c0f14 40%, #090c10 100%);
+  color: #fff;
+  isolation: isolate; /* creates a new stacking context for the overlays */
+}
+
+/* Ultra‑subtle noise overlay (won't trigger postcss issues) */
+.bpj-surface::before {
+  content: "";
+  position: absolute; inset: 0;
+  background-image: url("/noise.svg");
+  opacity: 0.25;      /* keep it very subtle */
+  pointer-events: none;
+  z-index: -1;
+  mix-blend-mode: normal;
+}
+
+/* Brand glow (top-right + bottom-left) */
+.bpj-surface::after {
+  content: "";
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(50% 40% at 85% 5%, rgba(16,185,129,0.12) 0%, transparent 60%),
+    radial-gradient(55% 45% at 10% 95%, rgba(34,211,238,0.10) 0%, transparent 60%);
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* Optional: vignette for big sections (focus center, dark edges) */
+.bpj-vignette {
+  position: relative;
+}
+.bpj-vignette::after {
+  content: "";
+  position: absolute; inset: 0;
+  pointer-events: none;
+  background: radial-gradient(60% 60% at 50% 45%, transparent 60%, rgba(0,0,0,0.65) 100%);
+}
+
+/* Keep your existing helpers */
+.hero-bottom-fade {
+  mask-image: linear-gradient(to bottom, black 85%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to bottom, black 85%, transparent 100%);
+}
+.video-smooth {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  will-change: transform;
+}
