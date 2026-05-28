@@ -54,7 +54,7 @@ export default function Home() {
               transition={{ duration: 0.6 }}
               className="text-sm font-bold uppercase tracking-[0.22em] text-emerald-300"
             >
-              Pinehurst, Texas septic specialists
+              Magnolia, Texas septic specialists
             </motion.p>
             <motion.h1
               initial={{ opacity: 0, y: 28 }}
